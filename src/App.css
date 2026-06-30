@@ -1,0 +1,230 @@
+:root {
+  --olive-deep: #526343;
+  --eucalyptus-gray: #7A8B7E;
+  --moss-light: #9FB36E;
+  --cream-soft: #F6F8D9;
+}
+
+/* =========================================
+   ESTRUCTURA BASE Y FONDO FIJO
+   ========================================= */
+.app-container {
+  font-family: system-ui, sans-serif;
+  color: var(--olive-deep);
+  position: relative;
+  /* Nota: Ya no bloqueamos el scroll */
+}
+
+/* La foto real de fondo que no se mueve */
+.background-image {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image: url('/foto-fondo.jpg'); /* Conecta con tu foto en la carpeta public */
+  background-size: cover;
+  background-position: center;
+  z-index: -2;
+}
+
+/* La capa crema semitransparente para que el texto sea legible */
+.background-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--cream-soft);
+  opacity: 0.85; /* 85% de opacidad, ajusta este número si quieres que se vea más o menos la foto */
+  z-index: -1;
+}
+
+/* Gráficos florales */
+.floral {
+  position: absolute;
+  color: var(--moss-light);
+  opacity: 0.6;
+}
+.floral-top-left { top: -20px; left: -20px; font-size: 5rem; }
+.floral-top-right { top: 10px; right: 10px; font-size: 4rem; }
+
+/* =========================================
+   SECCIONES
+   ========================================= */
+.hero-section {
+  min-height: 100vh; /* Obliga a la portada a ocupar toda la primera pantalla */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 0 20px;
+}
+
+.subtitle {
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  color: var(--eucalyptus-gray);
+  font-weight: bold;
+}
+
+.title {
+  font-size: 3.5rem;
+  margin: 10px 0;
+  font-family: serif;
+  color: var(--olive-deep);
+  line-height: 1;
+}
+
+.date {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-top: 10px;
+}
+
+.countdown-box {
+  margin-top: 30px;
+  padding: 12px 20px;
+  border: 1px solid var(--moss-light);
+  border-radius: 8px;
+  color: var(--moss-light);
+  font-weight: bold;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+}
+
+/* =========================================
+   ITINERARIO
+   ========================================= */
+/* --- DISEÑO DE ITINERARIO (TIMELINE REPLICADO) --- */
+
+.itinerary-section {
+  padding: 60px 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.itinerary-title {
+  text-align: center;
+  font-family: 'Playfair Display', serif; /* O la tipografía elegante que estés usando */
+  font-size: 2.5rem;
+  margin-bottom: 50px;
+  color: #333;
+}
+
+/* Contenedor principal que dibuja la línea negra del centro */
+.timeline-container {
+  position: relative;
+  margin: 0 auto;
+}
+
+/* La línea negra vertical */
+.timeline-container::after {
+  content: '';
+  position: absolute;
+  width: 2px;
+  background-color: #000000; /* Color idéntico a tu boceto */
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  margin-left: -1px;
+}
+
+/* Cada renglón/bloque del itinerario */
+.timeline-item {
+  padding: 10px 40px;
+  position: relative;
+  background-color: inherit;
+  width: 50%;
+  box-sizing: border-box;
+}
+
+/* Iconos circulares sobre la línea */
+.timeline-icon {
+  position: absolute;
+  width: 34px;
+  height: 34px;
+  right: -17px;
+  background-color: #fcfbf7; /* Cambia al fondo de tu hoja/página */
+  border: 1px solid #000;
+  border-radius: 50%;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+
+/* Posicionamiento de los elementos que van a la izquierda */
+.left-item {
+  left: 0;
+  text-align: right;
+}
+
+/* Posicionamiento de los elementos que van a la derecha */
+.right-item {
+  left: 50%;
+  text-align: left;
+}
+
+/* Mueve los iconos del lado derecho para encajar exactamente en la línea */
+.right-item .timeline-icon {
+  left: -17px;
+}
+
+/* Estilos de los textos */
+.timeline-content {
+  padding: 10px 20px;
+  position: relative;
+}
+
+.itinerary-time {
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: #000;
+  display: block;
+  border-bottom: 1px solid #000; /* Línea pequeña del boceto */
+  padding-bottom: 2px;
+  margin-bottom: 5px;
+  display: inline-block;
+}
+
+.itinerary-event {
+  font-size: 1.3rem;
+  margin: 2px 0;
+  color: #222;
+}
+
+.itinerary-desc {
+  font-size: 0.95rem;
+  color: #666;
+  font-style: italic;
+}
+
+/* --- RESPONSIVO PARA CELULARES --- */
+@media screen and (max-width: 600px) {
+  /* Mueve la línea central hacia la izquierda */
+  .timeline-container::after {
+    left: 31px;
+  }
+
+  /* Los bloques ahora ocupan todo el ancho de la pantalla */
+  .timeline-item {
+    width: 100%;
+    padding-left: 70px;
+    padding-right: 25px;
+    text-align: left !important;
+  }
+
+  .right-item {
+    left: 0%;
+  }
+
+  /* Todos los iconos se alinean sobre la línea izquierda */
+  .timeline-icon, .right-item .timeline-icon {
+    left: 15px;
+  }
+}
