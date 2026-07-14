@@ -219,6 +219,83 @@ function App() {
         </div>
       </section>
 
+      {/* 3. SECCIÓN DE UBICACIONES */}
+      {/* ========================================= */}
+      <section className="location-section">
+        <h2 className="location-title">Ubicación</h2>
+
+        <div className="location-container">
+          
+          {/* Tarjeta 1: Ceremonia */}
+          <div className="location-card">
+            <div className="location-icon">⛪</div>
+            <h3 className="location-name">Ceremonia Religiosa</h3>
+            <p className="location-place">Inmaculado Corazón de María</p>
+            <p className="location-time">6:00 PM</p>
+            
+            <a 
+              href="https://maps.app.goo.gl/gFzykGd56CGFWShG9" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="location-btn"
+            >
+              📍 Ver en Google Maps
+            </a>
+          </div>
+
+          {/* Tarjeta 2: Recepción */}
+          <div className="location-card">
+            <div className="location-icon">🥂</div>
+            <h3 className="location-name">Recepción</h3>
+            <p className="location-place">Quinta Aloutte</p>
+            <p className="location-time">8:00 PM</p>
+            
+            <a 
+              href="https://maps.app.goo.gl/ofYjns59H9y5LBuT9" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="location-btn"
+            >
+              📍 Ver en Google Maps
+            </a>
+          </div>
+
+        </div>
+      </section>
+      {/* 4. SECCIÓN DE MESA DE REGALOS */}
+      {/* ========================================= */}
+      <section className="registry-section">
+        <h2 className="registry-title">Mesa de Regalos</h2>
+        
+        <p className="registry-description">
+          El regalo más valioso para nosotros es tu presencia y cariño en este día tan importante. 
+          Pero si deseas tener un detalle para ayudarnos a construir nuestro nuevo hogar, 
+          ponemos a tu disposición nuestras mesas de regalos:
+        </p>
+
+        <div className="registry-buttons-container">
+          {/* Botón Liverpool */}
+          <a 
+            href="https://www.liverpool.com.mx" /* Pon aquí el link exacto de tu mesa de Liverpool */
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="registry-btn liverpool-btn"
+          >
+            🛍️ Liverpool
+          </a>
+
+          {/* Botón Google */}
+          <a 
+            href="https://www.amazon.com" /* Pon aquí el link de tu lista o documento de Google */
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="registry-btn amazon-btn"
+          >
+            🎁 amazon
+          </a>
+        </div>
+      </section>
+
     </div>
   );
 }
