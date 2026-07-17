@@ -64,11 +64,12 @@ function App() {
   }, []);
 
   const carouselPhotos = [
-    { id: 1, src: './anillo.JPG', caption: 'Donde empezó todo' },
-    { id: 2, src: './arbol.JPG', caption: 'Sesión formal (Denisse con su vestido floral menta)' },
-    { id: 3, src: './caballito.JPG', caption: 'Listos para el gran día' },
-    { id: 4, src: './juegos.JPG', caption: 'Sesión formal (Denisse con su vestido floral menta)' },
-    { id: 5, src: './pose.JPG', caption: 'Listos para el gran día' }
+    { id: 1, src: './foto1.jpg'},
+    { id: 2, src: './foto2.jpg'},
+    { id: 3, src: './foto3.jpg'},
+    { id: 4, src: './foto4.jpg'},
+    { id: 5, src: './foto5.jpg'},
+    { id: 6, src: './foto6.jpg'}
   ];
 
   const [currentPhoto, setCurrentPhoto] = useState(0);
@@ -118,7 +119,8 @@ function App() {
       {/* 1.5. SECCIÓN DE CARRUSEL DE FOTOS */}
 
       <section className="carousel-section">
-        <h2 className="carousel-title">Nuestros Momentos</h2>
+        
+        <h4 className="carousel-description">Dios hizo posible que nos encontráramos y decidió unir nuestras historias en una sola, hoy celebramos el verdadero y más puro amor que hemos contruido y decidido cuidar, proteger y compartir por el resto de nuestras vidas con Jesús como centro de nuestro matrimonio</h4>
         
         <div className="carousel-container">
           <button className="carousel-btn left" onClick={prevPhoto}>&#10094;</button>
@@ -180,7 +182,7 @@ function App() {
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256"><path d="M72,88V40a8,8,0,0,1,16,0V88a8,8,0,0,1-16,0ZM216,40V224a8,8,0,0,1-16,0V176H152a8,8,0,0,1-8-8,268.75,268.75,0,0,1,7.22-56.88c9.78-40.49,28.32-67.63,53.63-78.47A8,8,0,0,1,216,40ZM200,53.9c-32.17,24.57-38.47,84.42-39.7,106.1H200ZM119.89,38.69a8,8,0,1,0-15.78,2.63L112,88.63a32,32,0,0,1-64,0l7.88-47.31a8,8,0,1,0-15.78-2.63l-8,48A8.17,8.17,0,0,0,32,88a48.07,48.07,0,0,0,40,47.32V224a8,8,0,0,0,16,0V135.32A48.07,48.07,0,0,0,128,88a8.17,8.17,0,0,0-.11-1.31Z"></path></svg>
             </div>
             <div className="timeline-content">
-              <span className="itinerary-time">22:30 hrs</span>
+              <span className="itinerary-time">21:30 hrs</span>
               <p className="itinerary-event">Cena</p>
               <p className="itinerary-desc">Disfrutemos de un banquete inolvidable juntos.</p>
             </div>
@@ -197,14 +199,14 @@ function App() {
           </div>
 
           {/* Evento 6: Izquierda (23:45) */}
-          <div className="timeline-item left-item">
+          {/* <div className="timeline-item left-item">
             <div className="timeline-icon">🎂</div>
             <div className="timeline-content">
               <span className="itinerary-time">23:45 hrs</span>
               <p className="itinerary-event">Corte del Pastel</p>
               <p className="itinerary-desc">Un momento dulce para compartir.</p>
             </div>
-          </div>
+          </div> */}
 
           {/* Evento 7: Derecha (01:00) */}
           <div className="timeline-item right-item">

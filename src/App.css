@@ -285,6 +285,13 @@
   color: var(--olive-deep);
 }
 
+.carousel-description {
+  font-size: 1.1rem;
+  color: var(--eucalyptus-gray);
+  margin-bottom: 40px;
+  line-height: 1.5;
+}
+
 .carousel-container {
   display: flex;
   align-items: center;
