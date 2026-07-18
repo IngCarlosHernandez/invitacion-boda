@@ -46,6 +46,7 @@
   position: absolute;
   color: var(--moss-light);
   opacity: 0.6;
+  pointer-events: none; /* Evita que interfiera con los clics */
 }
 .floral-top-left { top: -20px; left: -20px; font-size: 5rem; }
 .floral-top-right { top: 10px; right: 10px; font-size: 4rem; }
@@ -482,7 +483,7 @@
   }
   
   .location-btn {
-    width: 60%; 
+    width: 70%; 
   }
 }
 /* =========================================
@@ -573,7 +574,225 @@
   }
 
   .registry-btn {
-    width: 60%; 
+    width: 70%; 
     box-sizing: border-box;
   }
+}
+
+/* =========================================
+   SECCIÓN DE CONFIRMACIÓN (RSVP)
+   ========================================= */
+.rsvp-section {
+  padding: 60px 20px 100px 20px;
+  max-width: 700px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+.rsvp-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 30px;
+  color: var(--olive-deep);
+}
+
+.rsvp-card {
+  background-color: var(--cream-soft);
+  border: 1px solid var(--moss-light);
+  border-radius: 12px;
+  padding: 35px 25px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.rsvp-greeting {
+  font-size: 1.8rem;
+  color: var(--olive-deep);
+  margin-top: 0;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.rsvp-text {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #333;
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+/* Caja de pases asignados */
+.passes-box {
+  background-color: rgba(159, 179, 110, 0.15); /* Verde musgo muy transparente */
+  border-left: 4px solid var(--olive-deep);
+  padding: 15px 20px;
+  border-radius: 6px;
+  margin-bottom: 30px;
+}
+
+.passes-number {
+  font-size: 1.2rem;
+  color: var(--olive-deep);
+  display: block;
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--moss-light);
+  padding-bottom: 5px;
+}
+
+.passes-names p {
+  margin: 0 0 8px 0;
+  font-weight: bold;
+  color: #444;
+}
+
+.passes-names ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.passes-names li {
+  font-size: 1.05rem;
+  color: #222;
+  margin-bottom: 4px;
+}
+
+/* Botón de confirmación principal */
+.rsvp-main-btn {
+  width: 100%;
+  padding: 16px;
+  background-color: var(--olive-deep);
+  color: var(--cream-soft);
+  border: none;
+  border-radius: 30px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  box-shadow: 0 4px 12px rgba(82, 99, 67, 0.3);
+}
+
+.rsvp-main-btn:hover:not(:disabled) {
+  background-color: #3d4a31;
+  transform: translateY(-2px);
+}
+
+.rsvp-main-btn.confirmed {
+  background-color: var(--eucalyptus-gray);
+  cursor: default;
+  box-shadow: none;
+}
+
+/* Checkbox del lado derecho */
+.extra-toggle-container {
+  text-align: right;
+  margin-top: 15px;
+}
+
+.extra-toggle-label {
+  font-size: 0.9rem;
+  color: var(--eucalyptus-gray);
+  cursor: pointer;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.extra-toggle-label input {
+  accent-color: var(--olive-deep);
+  width: 16px;
+  height: 16px;
+}
+
+/* Formulario desplegable extra */
+.extra-form {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px dashed var(--eucalyptus-gray);
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.extra-disclaimer {
+  font-size: 0.9rem;
+  background-color: #fff3cd;
+  color: #856404;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  line-height: 1.4;
+  border: 1px solid #ffeeba;
+}
+
+.extra-field {
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.extra-field label {
+  display: block;
+  font-size: 0.95rem;
+  color: var(--olive-deep);
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.extra-select, .extra-input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--eucalyptus-gray);
+  border-radius: 8px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  background-color: #fff;
+  color: #333;
+}
+
+.extra-submit-btn {
+  width: 100%;
+  padding: 14px;
+  background-color: var(--moss-light);
+  color: #fff;
+  border: none;
+  border-radius: 25px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.3s;
+}
+
+.extra-submit-btn:hover {
+  background-color: var(--olive-deep);
+}
+
+/* Notificación Flotante (Toast) */
+.toast-notification {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--olive-deep);
+  color: var(--cream-soft);
+  padding: 16px 28px;
+  border-radius: 30px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  font-weight: bold;
+  font-size: 1.05rem;
+  z-index: 1000;
+  text-align: center;
+  width: 80%;
+  max-width: 400px;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from { bottom: -60px; opacity: 0; }
+  to { bottom: 30px; opacity: 1; }
 }
