@@ -1,31 +1,113 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 
-// =========================================
-// BASE DE DATOS DE INVITADOS (JERARQUÍA)
-// =========================================
-const baseDeDatosInvitados = [
-  {
-    id: "001",
-    responsable: "Familia Hernández Machado",
-    pasesTotales: 3,
-    acompanantes: ["Carlos Hernández", "Denisse Machado", "Guni Hernández"],
-    confirmado: false,
-    pasesExtra: 0,
-    nombresExtra: ""
-  },
-  {
-    id: "002",
-    responsable: "Tío Roberto García",
-    pasesTotales: 2,
-    acompanantes: ["Roberto García", "Clara de García"],
-    confirmado: false,
-    pasesExtra: 0,
-    nombresExtra: ""
-  }
-];
+// ============================================================================
+// 1. URL DE TU GOOGLE APPS SCRIPT (PEGA AQUÍ TU URL DEL PASO 3)
+// ============================================================================
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyIJpMzt_3gCsdhkmjBYOWRhATd7O7pkOX3k91WuEViHgl7lyqFWNvpf_rbEpdTFz1ANQ/exec";
+
+// Datos de respaldo por si fallara el internet o abren un link sin ID
+const invitadoRespaldo = {
+  id: "001",
+  responsable: "Invitado de honor",
+  pasesTotales: 2,
+  acompanantes: ["Invitado", "Acompañante"],
+  estadoAsistencia: "pendiente",
+  pasesExtra: 0,
+  nombresExtra: ""
+}; 
 
 function App() {
+  // ============================================================================
+  // 2. LÓGICA DE CONEXIÓN CON GOOGLE SHEETS EN TIEMPO REAL
+  // ============================================================================
+  const queryParams = new URLSearchParams(window.location.search);
+  const idInvitado = queryParams.get('id') || "001";
+  
+  const [invitado, setInvitado] = useState(invitadoRespaldo);
+  const [cargandoDatos, setCargandoDatos] = useState(true); // Pantalla de carga inicial
+  const [estadoAsistencia, setEstadoAsistencia] = useState("pendiente");
+  
+  // Estados para pases extra y notificaciones
+  const [quiereExtra, setQuiereExtra] = useState(false);
+  const [numExtra, setNumExtra] = useState("1");
+  const [nombresExtra, setNombresExtra] = useState("");
+  const [mostrarToast, setMostrarToast] = useState(false);
+  const [mensajeToast, setMensajeToast] = useState('');
+
+  const lanzarNotificacion = (mensaje) => {
+    setMensajeToast(mensaje);
+    setMostrarToast(true);
+    setTimeout(() => { setMostrarToast(false); }, 4000);
+  };
+
+  // LECTURA (GET): Al cargar la página, consultamos Google Sheets por el ID de la URL
+  useEffect(() => {
+    setCargandoDatos(true);
+    fetch(`${SCRIPT_URL}?id=${idInvitado}`)
+      .then(res => res.json())
+      .then(data => {
+        if (!data.error) {
+          setInvitado(data);
+          setEstadoAsistencia(data.estadoAsistencia || "pendiente");
+        } else {
+          console.warn("No se encontró el ID en Excel, usando respaldo.");
+        }
+      })
+      .catch(err => console.error("Error al conectar con Google Sheets:", err))
+      .finally(() => setCargandoDatos(false));
+  }, [idInvitado]);
+
+  // ESCRITURA (POST): Función que envía cambios a tu Excel en segundo plano
+  const guardarEnGoogleSheets = (nuevoEstado, pasesEx = 0, nombresEx = "") => {
+    const payload = {
+      id: invitado.id,
+      estadoAsistencia: nuevoEstado,
+      pasesExtra: pasesEx,
+      nombresExtra: nombresEx
+    };
+
+    // Nota técnica: Usamos text/plain para evitar errores de CORS con Google Apps Script
+    fetch(SCRIPT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(data => console.log("Guardado exitoso en Excel:", data))
+    .catch(err => console.error("Error al guardar en Excel:", err));
+  };
+
+  // Botón: SÍ ASISTIRÉ
+  const handleConfirmar = () => {
+    setEstadoAsistencia("si");
+    guardarEnGoogleSheets("si", 0, "");
+    lanzarNotificacion("¡Se ha registrado tu asistencia con éxito! 🎉");
+  };
+
+  // Botón: NO PODRÉ ASISTIR
+  const handleRechazar = () => {
+    setEstadoAsistencia("no");
+    setQuiereExtra(false);
+    guardarEnGoogleSheets("no", 0, "");
+    lanzarNotificacion("Hemos registrado tu respuesta. ¡Te extrañaremos! 🤍");
+  };
+
+  // Botón de formulario extra
+  const handleEnviarExtra = (e) => {
+    e.preventDefault();
+    if (!nombresExtra.trim()) {
+      alert("Por favor, escribe el nombre de las personas para los pases extra.");
+      return;
+    }
+    setEstadoAsistencia("si");
+    guardarEnGoogleSheets("si", Number(numExtra), nombresExtra);
+    lanzarNotificacion("¡Confirmación y solicitud de pases extra enviadas! 📨");
+    setQuiereExtra(false);
+  };
+
+  // ============================================================================
+  // ... (A PARTIR DE AQUÍ SIGUEN TUS FUNCIONES DEL TEMPORIZADOR Y DEMÁS) ...
   const targetDate = new Date('2026-09-05T18:00:00');
 
   const calculateTimeLeft = () => {
@@ -106,60 +188,7 @@ function App() {
     setCurrentPhoto((prev) => (prev === 0 ? carouselPhotos.length - 1 : prev - 1));
   };
 
-  // =========================================
-  // LÓGICA DE CONFIRMACIÓN (RSVP)
-  // =========================================
-  // Buscamos al invitado por el ID de la URL (ej. ?id=001). Si no hay, mostramos el primero por defecto para pruebas.
-  const queryParams = new URLSearchParams(window.location.search);
-  const idInvitado = queryParams.get('id') || "001";
   
-  const [invitado, setInvitado] = useState(
-    baseDeDatosInvitados.find(inv => inv.id === idInvitado) || baseDeDatosInvitados[0]
-  );
-
-  const [confirmado, setConfirmado] = useState(invitado.confirmado);
-  const [mostrarToast, setMostrarToast] = useState(false);
-  const [mensajeToast, setMensajeToast] = useState('');
-  
-  // Estados para pases extra
-  const [quiereExtra, setQuiereExtra] = useState(false);
-  const [numExtra, setNumExtra] = useState("1");
-  const [nombresExtra, setNombresExtra] = useState("");
-
-  // Función para lanzar la notificación flotante
-  const lanzarNotificacion = (mensaje) => {
-    setMensajeToast(mensaje);
-    setMostrarToast(true);
-    setTimeout(() => {
-      setMostrarToast(false);
-    }, 4000); // Se oculta sola a los 4 segundos
-  };
-
-  // Botón principal de confirmar
-  const handleConfirmar = () => {
-    setConfirmado(true);
-    // Aquí se conectará con Google Sheets después
-    console.log("Confirmado:", { id: invitado.id, responsable: invitado.responsable });
-    lanzarNotificacion("¡Se ha enviado tu confirmación con éxito! 🎉");
-  };
-
-  // Botón de enviar pases extra (y confirmar si no lo estaba)
-  const handleEnviarExtra = (e) => {
-    e.preventDefault();
-    if (!nombresExtra.trim()) {
-      alert("Por favor, escribe el nombre de las personas para los pases extra.");
-      return;
-    }
-    setConfirmado(true);
-    // Aquí se enviarán los datos extra a la base de datos
-    console.log("Solicitud Extra:", { 
-      id: invitado.id, 
-      pasesSolicitados: numExtra, 
-      nombres: nombresExtra 
-    });
-    lanzarNotificacion("¡Confirmación y solicitud de pases extra enviadas! 📨");
-    setQuiereExtra(false); // Cerramos el formulario extra
-  };
 
   return (
 
@@ -377,91 +406,122 @@ function App() {
         </div>
       </section>
 
-      {/* ========================================= */}
-      {/* 5. SECCIÓN DE CONFIRMACIÓN (RSVP) */}
-      {/* ========================================= */}
+     {/* SECCIÓN 5: CONFIRMACIÓN DE ASISTENCIA (RSVP) */}
       <section className="rsvp-section">
         <h2 className="rsvp-title">Confirmación</h2>
         
         <div className="rsvp-card">
-          <h3 className="rsvp-greeting">¡Hola, {invitado.responsable}!</h3>
-          
-          <p className="rsvp-text">
-            Nos alegraría muchísimo contar con su presencia en este día tan especial para nosotros. 
-            Nos serviría de mucho que confirmaran su asistencia.
-          </p>
-
-          {/* Caja de pases asignados */}
-          <div className="passes-box">
-            <span className="passes-number">Pases asignados: <strong>{invitado.pasesTotales}</strong></span>
-            <div className="passes-names">
-              <p>Reservados para:</p>
-              <ul>
-                {invitado.acompanantes.map((nombre, index) => (
-                  <li key={index}>✨ {nombre}</li>
-                ))}
-              </ul>
+          {cargandoDatos ? (
+            <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--olive-deep)' }}>
+              <p style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>✨ Consultando invitación...</p>
             </div>
-          </div>
+          ) : (
+            <>
+              <h3 className="rsvp-greeting">¡Hola, {invitado.responsable}!</h3>
+              
+              <p className="rsvp-text">
+                Nos alegraría muchísimo contar con su presencia en este día tan especial para nosotros. 
+                Nos serviría de mucho que confirmaran su asistencia.
+              </p>
 
-          {/* Botón principal (cambia si ya confirmó) */}
-          <button 
-            className={`rsvp-main-btn ${confirmado ? 'confirmed' : ''}`}
-            onClick={handleConfirmar}
-            disabled={confirmado}
-          >
-            {confirmado ? '✓ ¡Asistencia Confirmada!' : 'Confirmar Asistencia'}
-          </button>
-
-          {/* Checkbox alineado a la derecha en pequeño */}
-          <div className="extra-toggle-container">
-            <label className="extra-toggle-label">
-              <input 
-                type="checkbox" 
-                checked={quiereExtra} 
-                onChange={(e) => setQuiereExtra(e.target.checked)} 
-              />
-              Quiero pases extra
-            </label>
-          </div>
-
-          {/* Formulario desplegable de pases extra */}
-          {quiereExtra && (
-            <form className="extra-form" onSubmit={handleEnviarExtra}>
-              <div className="extra-disclaimer">
-                ⚠️ <strong>Nota importante:</strong> Los pases extra están a disposición y cupo de los novios. Se les notificará personalmente si su solicitud fue aprobada.
+              {/* Caja de pases asignados */}
+              <div className="passes-box">
+                <span className="passes-number">Pases asignados: <strong>{invitado.pasesTotales}</strong></span>
+                <div className="passes-names">
+                  <p>Reservados para:</p>
+                  <ul>
+                    {invitado.acompanantes.map((nombre, index) => (
+                      <li key={index}>✨ {nombre}</li>
+                    ))}
+                  </ul>
+                </div>
               </div>
 
-              <div className="extra-field">
-                <label>Número de pases solicitados:</label>
-                <select 
-                  value={numExtra} 
-                  onChange={(e) => setNumExtra(e.target.value)}
-                  className="extra-select"
-                >
-                  <option value="1">1 Pase Extra</option>
-                  <option value="2">2 Pases Extra</option>
-                </select>
+              {/* Contenedor de Botones (Sí / No / Cambiar respuesta) */}
+              <div className="rsvp-buttons-group">
+                {estadoAsistencia === 'pendiente' && (
+                  <>
+                    <button className="rsvp-main-btn" onClick={handleConfirmar}>
+                      Confirmar Asistencia
+                    </button>
+                    <button className="rsvp-decline-btn" onClick={handleRechazar}>
+                      No podré asistir
+                    </button>
+                  </>
+                )}
+
+                {estadoAsistencia === 'si' && (
+                  <div className="rsvp-status-box confirmed-box">
+                    <p>✓ ¡Has confirmado tu asistencia!</p>
+                    <button className="rsvp-change-btn" onClick={() => setEstadoAsistencia('pendiente')}>
+                      Cambiar respuesta
+                    </button>
+                  </div>
+                )}
+
+                {estadoAsistencia === 'no' && (
+                  <div className="rsvp-status-box declined-box">
+                    <p>🤍 Has notificado que no podrás asistir. ¡Te extrañaremos!</p>
+                    <button className="rsvp-change-btn" onClick={() => setEstadoAsistencia('pendiente')}>
+                      Cambiar respuesta
+                    </button>
+                  </div>
+                )}
               </div>
 
-              <div className="extra-field">
-                <label>Nombre(s) de la persona extra:</label>
-                <input 
-                  type="text" 
-                  placeholder="Ej. Juan Pérez" 
-                  value={nombresExtra}
-                  onChange={(e) => setNombresExtra(e.target.value)}
-                  className="extra-input"
-                  required
-                />
-              </div>
+              {/* Checkbox y Formulario de Pases Extra */}
+              {estadoAsistencia !== 'no' && (
+                <>
+                  <div className="extra-toggle-container">
+                    <label className="extra-toggle-label">
+                      <input 
+                        type="checkbox" 
+                        checked={quiereExtra} 
+                        onChange={(e) => setQuiereExtra(e.target.checked)} 
+                      />
+                      Quiero pases extra
+                    </label>
+                  </div>
 
-              <button type="submit" className="extra-submit-btn">
-                Enviar Confirmación y Solicitud
-              </button>
-            </form>
+                  {quiereExtra && (
+                    <form className="extra-form" onSubmit={handleEnviarExtra}>
+                      <div className="extra-disclaimer">
+                        ⚠️ <strong>Nota importante:</strong> Los pases extra están a disposición y cupo de los novios. Se les notificará personalmente si su solicitud fue aprobada.
+                      </div>
+
+                      <div className="extra-field">
+                        <label>Número de pases solicitados:</label>
+                        <select 
+                          value={numExtra} 
+                          onChange={(e) => setNumExtra(e.target.value)}
+                          className="extra-select"
+                        >
+                          <option value="1">1 Pase Extra</option>
+                          <option value="2">2 Pases Extra</option>
+                        </select>
+                      </div>
+
+                      <div className="extra-field">
+                        <label>Nombre(s) de la persona extra:</label>
+                        <input 
+                          type="text" 
+                          placeholder="Ej. Juan Pérez" 
+                          value={nombresExtra}
+                          onChange={(e) => setNombresExtra(e.target.value)}
+                          className="extra-input"
+                          required
+                        />
+                      </div>
+
+                      <button type="submit" className="extra-submit-btn">
+                        Enviar Confirmación y Solicitud
+                      </button>
+                    </form>
+                  )}
+                </>
+              )}
+            </>
           )}
-
         </div>
 
         {/* Notificación Flotante (Toast) */}
