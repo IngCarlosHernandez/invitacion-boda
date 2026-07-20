@@ -246,7 +246,7 @@ function App() {
 
         <h2 className='carousel-title'>Tenemos el honor de invitarte a nuestra boda</h2>
         
-        <h4 className="carousel-description">Dios hizo posible que nos encontráramos y decidió unir nuestras historias en una sola, hoy celebramos el verdadero y más puro amor que hemos contruido y decidido cuidar, proteger y compartir por el resto de nuestras vidas con Jesús como centro de nuestro matrimonio</h4>
+        <h4 className="carousel-description">Dios hizo posible que nos encontráramos y decidió unir nuestras historias en una sola, hoy celebramos el verdadero y más puro amor que hemos construido y decidido cuidar, proteger y compartir por el resto de nuestras vidas con Jesús como centro de nuestro matrimonio.</h4>
         
         <div className="carousel-container">
           <div className="carousel-slide">
