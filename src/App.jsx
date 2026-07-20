@@ -408,7 +408,7 @@ function App() {
         <div className="registry-buttons-container">
           {/* Botón Liverpool */}
           <a 
-            href="https://www.liverpool.com.mx" /* Pon aquí el link exacto de tu mesa de Liverpool */
+            href="https://mesaderegalos.liverpool.com.mx/milistaderegalos/52027763" 
             target="_blank" 
             rel="noopener noreferrer" 
             className="registry-btn liverpool-btn"
@@ -418,7 +418,7 @@ function App() {
 
           {/* Botón Google */}
           <a 
-            href="https://www.amazon.com" /* Pon aquí el link de tu lista o documento de Google */
+            href="https://www.amazon.com.mx/wedding/guest-view/5SFZ2H0YWN6T" 
             target="_blank" 
             rel="noopener noreferrer" 
             className="registry-btn amazon-btn"
