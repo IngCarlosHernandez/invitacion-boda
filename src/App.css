@@ -279,6 +279,18 @@
   z-index: 2; /* Lo mantiene por encima del fondo fijo */
 }
 
+.carousel-titlePadres {
+  font-family: 'Great Vibes', cursive;
+  font-size: 2.5rem;
+  margin-bottom: 30px;
+  color: var(--olive-deep);
+}
+
+.carousel-Nombres {
+  font-size: 1.5rem;
+  color: var(--eucalyptus-gray);
+  margin-bottom: 20px;
+}
 .carousel-title {
   font-family: 'Playfair Display', serif;
   font-size: 2.5rem;

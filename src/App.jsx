@@ -180,6 +180,7 @@ function App() {
 
   const [currentPhoto, setCurrentPhoto] = useState(0);
 
+  // Lógica de navegación manual
   const nextPhoto = () => {
     setCurrentPhoto((prev) => (prev === carouselPhotos.length - 1 ? 0 : prev + 1));
   };
@@ -187,6 +188,15 @@ function App() {
   const prevPhoto = () => {
     setCurrentPhoto((prev) => (prev === 0 ? carouselPhotos.length - 1 : prev - 1));
   };
+
+  // NUEVO: Temporizador para cambiar la foto automáticamente cada 2 segundos
+  useEffect(() => {
+    const intervalo = setInterval(() => {
+      setCurrentPhoto((prev) => (prev === carouselPhotos.length - 1 ? 0 : prev + 1));
+    }, 2000); // 2000 ms = 2 segundos (puedes subirlo a 3000 si sientes que va muy rápido)
+
+    return () => clearInterval(intervalo);
+  }, [carouselPhotos.length]);
 
   
 
@@ -227,22 +237,34 @@ function App() {
       {/* 1.5. SECCIÓN DE CARRUSEL DE FOTOS */}
 
       <section className="carousel-section">
+        <h2 className="carousel-titlePadres">Con la bendición de Dios y nuestros Padres</h2>
+
+        
+        <h4 className='carousel-Nombres'>Rosa Arenales Maldonado <br/>Javier Machado Ibarra</h4>
+        
+        <h4 className='carousel-Nombres'>María Monserrat Hernández Chávez<br/>Manuel Roberto Estrada Domínguez<br/><br/><br/></h4>
+
+        <h2 className='carousel-title'>Tenemos el honor de invitarte a nuestra boda</h2>
         
         <h4 className="carousel-description">Dios hizo posible que nos encontráramos y decidió unir nuestras historias en una sola, hoy celebramos el verdadero y más puro amor que hemos contruido y decidido cuidar, proteger y compartir por el resto de nuestras vidas con Jesús como centro de nuestro matrimonio</h4>
         
         <div className="carousel-container">
-          <button className="carousel-btn left" onClick={prevPhoto}>&#10094;</button>
-          
           <div className="carousel-slide">
-            <img 
-              src={carouselPhotos[currentPhoto].src} 
-              alt={carouselPhotos[currentPhoto].caption} 
-              className="carousel-image"
-            />
+            
+            {/* Contenedor relativo de la imagen con zonas táctiles invisibles */}
+            <div className="image-touch-wrapper">
+              <div className="click-zone left-zone" onClick={prevPhoto} title="Foto anterior"></div>
+              <div className="click-zone right-zone" onClick={nextPhoto} title="Siguiente foto"></div>
+              
+              <img 
+                src={carouselPhotos[currentPhoto].src} 
+                alt={carouselPhotos[currentPhoto].caption} 
+                className="carousel-image"
+              />
+            </div>
+
             <p className="carousel-caption">{carouselPhotos[currentPhoto].caption}</p>
           </div>
-
-          <button className="carousel-btn right" onClick={nextPhoto}>&#10095;</button>
         </div>
       </section>
 
